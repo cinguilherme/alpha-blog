@@ -10,7 +10,6 @@ class ArticlesController < ApplicationController
   # GET /articles/1
   # GET /articles/1.json
   def show
-    p "did i just get evoked??"
   end
 
   # GET /articles/new
@@ -56,10 +55,16 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1.json
   def destroy
     @article.destroy
-    respond_to do |format|
-      format.html { redirect_to articles_url, notice: 'Article was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    render json: {
+        status: 200, message: 'Article was successfully destroyed.'
+        }, status: 200 
+    #respond_to do |format|
+    #  format.html { redirect_to articles_url, notice: 'Article was successfully destroyed.' }
+    #  format.json { render json: {
+    #   status: 200, message: 'Article was successfully destroyed.'
+    #   }, status: 200 
+    #  }
+    #end
   end
 
   private
@@ -68,13 +73,17 @@ class ArticlesController < ApplicationController
       @article = Article.find(params[:id])
     rescue ActiveRecord::RecordNotFound
       respond_to do |format|
-        format.html { redirect_to articles_url, notice: 'No Article' }
-        format.json { render json: {error: "404", message: "does not exist"}}
+        format.html { redirect_to articles_url, notice: 'Article not found' }
+        format.json { render json: {
+          error: 400, message: "article does not exist"
+          }, status: 400
+        }
       end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def article_params
+      p "running the article_params to make sure this is safe!"
       params.require(:article).permit(:title, :description)
     end
 end
