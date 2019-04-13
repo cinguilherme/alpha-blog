@@ -10,6 +10,7 @@ class ArticlesController < ApplicationController
   # GET /articles/1
   # GET /articles/1.json
   def show
+    p "did i just get evoked??"
   end
 
   # GET /articles/new
@@ -65,6 +66,11 @@ class ArticlesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_article
       @article = Article.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      respond_to do |format|
+        format.html { redirect_to articles_url, notice: 'No Article' }
+        format.json { render json: {error: "404", message: "does not exist"}}
+      end
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
